@@ -1,0 +1,14 @@
+
+[pipfile]
+pipreqs
+requirementslib
+
+[pyproject]
+toml
+
+[requirements]
+pip-api
+pipreqs
+
+[xdg_home]
+appdirs>=1.4.0

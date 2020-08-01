@@ -1,0 +1,24 @@
+Metadata-Version: 1.1
+Name: pynput
+Version: 1.6.8
+Summary: Monitor and control user input devices
+Home-page: https://github.com/moses-palmer/pynput
+Author: Moses Palmér
+Author-email: moses.palmer@gmail.com
+License: LGPLv3
+Description: 
+        
+        
+Keywords: control mouse,mouse input,control keyboard,keyboard input
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
+Classifier: Operating System :: MacOS :: MacOS X
+Classifier: Operating System :: Microsoft :: Windows :: Windows NT/2000
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: System :: Monitoring
