@@ -12,8 +12,13 @@ class ServoMotor(object):
 
     def __init__(self, channel, pwm_neutral, pwm_min, pwm_max, intervall = 5, min_degree = None, max_degree = None):
         self.channel = channel
-        self.min_degree = min_degree
-        self.max_degree = max_degree
+
+        if min_degree != None and max_degree != None:
+            self.min_degree = float(min_degree)
+            self.max_degree = float(max_degree)
+        else:
+            self.min_degree = min_degree
+            self.max_degree = max_degree
 
         # Initialization of the servo controller object pwm
         self.pwm = Adafruit_PCA9685.PCA9685()
@@ -42,11 +47,11 @@ class ServoMotor(object):
         self.intervall = intervall
 
     def get_intervall_degree(self):
-        if (self.get_servo_min_degree() and self.get_servo_max_degree()) != None:
-            intervall = self.get_servo_range_pwm() / self.get_servo_range_degree()
+        if (self.min_degree and self.max_degree) != None:
+            intervall = float(self.get_servo_range_pwm() / self.get_servo_range_degree())
             return intervall
         else:
-            return None
+            return 0.0
 
     def get_channel(self):
         return self.channel
@@ -55,16 +60,22 @@ class ServoMotor(object):
         self.channel = channel
 
     def get_servo_min_degree(self):
-        return self.min_degree
+        if self.min_degree != None:
+            return self.min_degree
+        else:
+            return 0.0
 
     def set_servo_min_degree(self, min_degree):
-        self.min_degree = min_degree
+        self.min_degree = float(min_degree)
 
     def get_servo_max_degree(self):
-        return self.max_degree
+        if self.max_degree != None:
+            return float(self.max_degree)
+        else:
+            return 0.0
 
     def set_servo_max_degree(self, max_degree):
-        self.max_degree = max_degree
+        self.max_degree = float(max_degree)
 
     def get_servo_min(self):
         return self.servo_min
@@ -80,11 +91,11 @@ class ServoMotor(object):
         return servo_range
 
     def get_servo_range_degree(self):
-        if (self.get_servo_min_degree() and self.get_servo_max_degree()) != None:
-            servo_range = self.get_servo_max_degree() + self.get_servo_min_degree()
+        if (self.min_degree and self.max_degree) != None:
+            servo_range = float(self.get_servo_max_degree() + self.get_servo_min_degree())
             return servo_range
         else:
-            return None
+            return 0.0
 
     def set_servo_pwm(self, pwm):
         if pwm > self.get_servo_max():
@@ -93,6 +104,8 @@ class ServoMotor(object):
             self.servo_pwm = self.get_servo_min()
         else:
             self.servo_pwm = pwm
+
+    def turnServo(self):
         self.pwm.set_pwm(self.channel, 0, self.servo_pwm)
 
     def get_servo_pwm(self):
@@ -118,7 +131,7 @@ class ServoMotor(object):
         self.set_servo_degree(degree)
 
     def get_servo_degree(self):
-        if (self.get_servo_min_degree() and self.get_servo_max_degree()) != None:
+        if (self.min_degree and self.max_degree) != None:
             servo_range_pwm = self.get_servo_range_pwm()
             servo_range_degree = self.get_servo_range_degree()
             servo_neutral = self.get_servo_neutral()
@@ -128,7 +141,7 @@ class ServoMotor(object):
 
             return degree
         else:
-            return None
+            return 0.0
 
     def set_servo_degree(self, degree):
         if (self.get_servo_min_degree() and self.get_servo_max_degree()) != None:
@@ -153,7 +166,7 @@ class ServoMotor(object):
         print("x:   Exit program")
         print("=== PWM value of the servo motors ===")
         print("PWM value servo motor: ", self.get_current_pwm())
-        print("Degree value servo motor: ", self.get_current_degree())
+        #print("Degree value servo motor: ", self.get_current_degree())
 
     def test_servo(self):
         while True:

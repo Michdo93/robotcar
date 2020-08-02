@@ -2,7 +2,7 @@ import os
 import sys
 import getpass
 
-env=os.path.expanduser(os.path.expandvars('/home/' + getpass.getuser() + '/robotcar'))
+env=os.path.expanduser(os.path.expandvars('/home/' + getpass.getuser() + '/robotcar/config'))
 sys.path.insert(0, env)
 
 from servo_config import ServoConfig

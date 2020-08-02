@@ -2,7 +2,7 @@
 import os
 import sys
 
-from servo_config import ServoConfig
+from config.servo_config import ServoConfig
 
 # Main function.
 if __name__ == "__main__":
