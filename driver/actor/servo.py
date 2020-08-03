@@ -105,7 +105,6 @@ class ServoMotor(object):
         else:
             self.servo_pwm = pwm
 
-    def turnServo(self):
         self.pwm.set_pwm(self.channel, 0, self.servo_pwm)
 
     def get_servo_pwm(self):

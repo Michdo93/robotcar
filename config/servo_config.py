@@ -92,18 +92,18 @@ class ServoConfig:
         if servoName == "steering":
             charMax = "d"
             charMin = "a"
-            turn = "turn left / right"
+            turn = "turn right / left"
             servoChannel = 0
         elif servoName == "pan":
-            charMax = "d"
-            charMin = "a"
+            charMax = "a"
+            charMin = "d"
             turn = "turn left / right"
-            servoChannel = 3
-        elif servoName == "tilt":
-            charMax = "w"
-            charMin = "s"
-            turn = "turn down / up"
             servoChannel = 4
+        elif servoName == "tilt":
+            charMax = "s"
+            charMin = "w"
+            turn = "turn down / up"
+            servoChannel = 3
 
         # channel, pwm_neutral, pwm_min, pwm_max, intervall
         servoMotor = ServoMotor(servoChannel, servo_neutral, servo_min, servo_max, intervall)
@@ -127,13 +127,13 @@ class ServoConfig:
             while True:
                 char = self.__getch()    
 
-                if(char == charMax):
+                if(char == charMin):
                     servo_pwm = servo_pwm - intervall
                     servoMotor.set_current_pwm(servo_pwm)
 
                     self.__printScreen(charMin, charMax, turn, servoName, current, servo_pwm)
 
-                if(char == charMin):
+                if(char == charMax):
                     servo_pwm = servo_pwm + intervall
                     servoMotor.set_current_pwm(servo_pwm)
 
@@ -152,5 +152,5 @@ class ServoConfig:
         char = ""
     
     def writeConifgFile(self):
-        with open('/home/' + getpass.getuser() + '/robotcar/servo_config.ini', 'w') as configfile:
+        with open('/home/' + getpass.getuser() + '/robotcar/config/servo_config.ini', 'w') as configfile:
             self.config.write(configfile)
