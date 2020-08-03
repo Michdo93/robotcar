@@ -1,0 +1,12 @@
+[submodule "lib/Adafruit_Python_MCP3008"]
+	path = lib/Adafruit_Python_MCP3008
+	url = https://github.com/adafruit/Adafruit_Python_MCP3008
+[submodule "lib/Adafruit_Python_SSD1306"]
+	path = lib/Adafruit_Python_SSD1306
+	url = https://github.com/adafruit/Adafruit_Python_SSD1306
+[submodule "lib/piVirtualWire"]
+	path = lib/piVirtualWire
+	url = https://github.com/DzikuVx/piVirtualWire
+[submodule "lib/vl53l1x-python"]
+	path = lib/vl53l1x-python
+	url = https://github.com/pimoroni/vl53l1x-python
