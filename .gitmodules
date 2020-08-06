@@ -10,3 +10,6 @@
 [submodule "lib/vl53l1x-python"]
 	path = lib/vl53l1x-python
 	url = https://github.com/pimoroni/vl53l1x-python
+[submodule "filter/kalman/SimpleKalmanFilter-Python"]
+	path = filter/kalman/SimpleKalmanFilter-Python
+	url = https://github.com/Michdo93/SimpleKalmanFilter-Python.git
