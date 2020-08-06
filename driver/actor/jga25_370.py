@@ -46,10 +46,10 @@ class JGA25_370(object):
         return self.frequency
 
     def getRPMMax(self):
-        return self.RPM_MAX
+        return int(self.RPM_MAX)
 
     def getRPM(self):
-        self.RPM = (self.getRPMMax() / 2 / 60) * self.getMotorPWM()
+        self.RPM = int((self.getRPMMax() / 2 / 60) * self.getMotorPWM())
         return self.RPM
 
     # alias getRPM()
