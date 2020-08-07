@@ -15,10 +15,18 @@ class IRGP2Y0A02YKOF(object):
         self.channel = channel
 
     def distance(self):
-        # 10650.08 * x ^ (-0.935)
-        distance = 10650.08 * pow(self.mcp.readIRAdc(self.channel),-0.935)
+        read = self.mcp.readIRAdc(self.channel)
 
-        return distance
+        if read > 0:
+            # 10650.08 * x ^ (-0.935)
+            distance = 10650.08 * pow(read,-0.935)
+        else:
+            distance = 0
+
+        if distance >= 0:
+            return distance
+        else:
+            return -1
 
     def speed(self):
         start_time = time.time()

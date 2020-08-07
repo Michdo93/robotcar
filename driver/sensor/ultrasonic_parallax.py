@@ -3,12 +3,13 @@ import RPi.GPIO as GPIO
 import time
 
 class UltrasonicParallax(object):
-    timeout = 0.05
 
     def __init__(self, pin):
         self.pin = pin
+        self.timeout = 0.05
 
         GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
 
     def distance(self):
         pulse_end = 0
@@ -47,8 +48,8 @@ class UltrasonicParallax(object):
             # The ping travels out and back, so to find the distance of the
             # object we take half of the distance travelled.
             # distance = duration / 29 / 2
-            distance = pulse_duration * 100 * 343.0 / 2
-            distance = int(distance)
+            #distance = pulse_duration * 100 * 343.0 / 2
+            distance = (pulse_duration * 34300) / 2
 
             #print('start = %s'%pulse_start,)
             #print('end = %s'%pulse_end)

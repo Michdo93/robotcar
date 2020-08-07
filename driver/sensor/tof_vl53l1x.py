@@ -62,7 +62,10 @@ class ToFVL53L1X(object):
         distance = 0.0
         distance = self.tof.get_distance() * 0.1 # mm to cm conversion
 
-        return distance
+        if distance >= 0:
+            return distance
+        else:
+            return -1
 
     def get_speed(self):
         start_time = time.time()
