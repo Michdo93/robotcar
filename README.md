@@ -311,7 +311,7 @@ rosrun image_view image_view image:=raspicam_node/image/compressed
 The simulation platform uses four differents software modules which also needs further catkin packages.
 
 |   Software Module  |    System   |      Description       |
-|--------------------------------------------- | ------------------------------|
+|------------------- | ------------|------------------------|
 | [robotcar](https://github.com/Michdo93/robotcar) | RobotCar | The robotcar module provides all drivers for actors and sensors. Also it provides all needed Libraries and configurations. Filters like the kalman filter are also provided. Programs for configuring and resetting the sensors are available as well as for testing the motor and controller. Service files for systemd and start-up are also available. This software module implements the functionality of the robot car. |
 | [robotcar-pkg](https://github.com/Michdo93/robotcar-pkg) | RobotCar | Via the ROS Publisher-Subscriber pattern, the robotcar-pkg enables the exchange of information. Publishers provide the information to ADAS and via subscriber an ADAS can intervene in the driving of the robot car. This software module therefore enables the necessary communication for the functionality. |
 | [robotcar_controller](https://github.com/Michdo93/robotcar_controller) | control computer respectively operating computer | The controller forwards appropriate control commands to the robot car, which should make it possible to move the robot car purposefully. For this purpose, primarily the motor and the steering are controlled. An extension, for example to move the camera or switch ADAS on and off, would be conceivable in the future. |
