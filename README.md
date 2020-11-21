@@ -2,7 +2,7 @@
 
 ## Develop and test Advanced Driver Assistance Systems (ADAS) with the robotcar using Python, ROS, OpenCV and TensorFlow
 
-![robotcar](pictures/robotcar.jpg "RobotCar"){:height="50%" width="50%"}
+![robotcar](pictures/robotcar.jpg "RobotCar")
 
 ## 1 Project Information
 =====================
@@ -22,6 +22,8 @@ The development of driver assistance functions is extensive and expensive. Virtu
 
 ## 2 Hardware
 =====================
+
+![robotcar](pictures/roboterauto.png "Robotcar block schema")
 
 (Not the actual used components because you can get it cheaper.)
 
@@ -325,13 +327,17 @@ Further packages:
 * The [raspicam_node](https://github.com/Michdo93/raspicam_node) is needed to use the raspicam with ROS. So the robot car definitely needs this package.
 
 
+![robotcar](pictures/I2C_Hub.PNG "Wiring I2C hub")
+![robotcar](pictures/Motortreiber.PNG "Wiring motor controller")
 
+![robotcar](pictures/RPi_GPS.PNG "Wiring GPS")
 
+![robotcar](pictures/RPi_PINS.PNG "Wiring RPi")
+![robotcar](pictures/RPi_USB.PNG "Wiring RPi USB")
+![robotcar](pictures/Servotreiber.PNG "Wiring servo controller")
+![robotcar](pictures/Steckboard.PNG "Wiring breadboard")
 
-
-
-![](https://cdn-images-1.medium.com/max/800/1*4GhtKM-eyuYqEpZnnUJZ9w@2x.jpeg)
-
-test
+![robotcar](pictures/Wandler.PNG "Wiring MCP3008")
+![robotcar](pictures/Step_Down_Converter.PNG "Wiring step down converter")
 
 
