@@ -713,13 +713,13 @@ systemctl list-units -t service
 Start manually
 
 ```
-
+sudo service mjpg-streamer.sh start
 ```
 
 Stop
 
 ```
-sudo service mjpg-streamer.sh start
+sudo service mjpg-streamer.sh stop
 ```
 
 Restart
