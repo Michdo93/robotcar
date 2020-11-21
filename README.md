@@ -25,8 +25,8 @@ The development of driver assistance functions is extensive and expensive. Virtu
 
 (Not the actual used components because you can get it cheaper.)
 
-| Quantity | Modul | Article | Estimated price |
-|--------- | ------| --------| ----------------|
+| Quantity | Modul | Article | Estimated price (per piece) |
+|--------- | ------| --------| ----------------------------|
 | 1 | chassis | [4WD RC Smart Car Chassis](https://www.elecrow.com/4wd-smart-car-robot-chassis-for-arduino-servo-steering.html) | 40,00€ |
 | 1 | chassis | [20x20 cm perforated plate](https://smile.amazon.de/dp/B00QAGIXLG/ref=pe_3044161_185740101_TE_item) | 2,50€ |
 | 1 | chassis | [mounting kit raspberry pi](https://www.amazon.de/gp/product/B07G5HM9ZT/ref=ppx_yo_dt_b_asin_title_o04_s00?ie=UTF8&psc=1) | 12,00€ |
@@ -53,17 +53,16 @@ The development of driver assistance functions is extensive and expensive. Virtu
 | 4 | ultrasonic | [HC-SR04](https://www.amazon.de/gp/product/B07KPJNLSS/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1) | 8,00€ |
 | 1 | ultrasonic | [330 Ohm resistor](https://www.amazon.de/gp/product/B00YW3E2LO/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1) | 6,37€ |
 | 1 | ultrasonic | [470 Ohm resistor](https://www.amazon.de/gp/product/B00YW4DTRG/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1) | 6,49€ |
-| 2 | infrared |  |  |
-| 1 | infrared |  |  |
-| 1 | infrared |  |  |
-| 1 | gps |  |  |
-| 1 | i2c |  |  |
+| 2 | infrared | [GP2Y0A02YK0F](https://www.amazon.de/SENSOR-DISTANCE-ANALOGUE-GP2Y0A02YK0F-SHARP/dp/B018COQRAC/ref=sr_1_1?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&dchild=1&keywords=GP2Y0A02YK0F+sharp&qid=1605987062&s=ce-de&sr=1-1) | 12,28€ |
+| 1 | infrared | [breadboard](https://www.pollin.de/p/acrylplatte-und-breadboard-fuer-rpi-b-2b-3b-3b-810982) | 4,50€ |
+| 1 | infrared | [MCP3008 A/D-Converter](https://de.rs-online.com/web/p/a-d-wandler/6696064/) | 2,00€ |
+| 1 | gps | [EZ-0048 GPS-Modul](https://www.amazon.de/USB-USB-Port-GPS-Modul-Raspberry-EZ-0048/dp/B07L9VZFZD) | 38,50€ |
+| 1 | i2c | [6 Port Grove I2C-Hub](https://www.robotshop.com/de/de/grove-i2c-hub-6-port.html?gclid=Cj0KCQiAkuP9BRCkARIsAKGLE8XOw5ILNanURA4TTg_egSyDX-QGtdQO4QljIMgeD9OuXtUTQ8oGYEcaAlaxEALw_wcB) | 1,47€ |
 | 1 | display | [I2C OLED 128 x 64 Pixel 0,96 Zoll](https://www.amazon.de/gp/product/B074N9VLZX/ref=ppx_yo_dt_b_asin_title_o09_s00?ie=UTF8&psc=1) | 11,99€ |
-| 1 | wire | jump wires |  |
-| 1 | wire | https://www.amazon.de/dp/B01AD62W56?tag=ingmstap-21&linkCode=ogi&th=1&psc=1 |  |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| 1 | wire | [jump wires (F2F, F2M and M2M)](https://www.amazon.de/AZDelivery-Jumper-Arduino-Raspberry-Breadboard/dp/B07KFPXN44/ref=sr_1_2_sspa?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=S8CEKQOZL6A6&dchild=1&keywords=jumper+kabel&qid=1605986389&quartzVehicle=21-720&replacementKeywords=kabel&sprefix=jumper+kabe%2Caps%2C203&sr=8-2-spons&psc=1&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEzVEJWNUhUMUg3SEg2JmVuY3J5cHRlZElkPUEwNzYxNDk3Mk9FWUJJUzRZTlZGViZlbmNyeXB0ZWRBZElkPUEwNzgzODI4SVpUNFRZUzVWTTQ5JndpZGdldE5hbWU9c3BfYXRmJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ==) | 4,66€ |
+| 1 | wire | [4 Pin Female Jumper to Grove](https://www.amazon.de/dp/B01AD62W56?tag=ingmstap-21&linkCode=ogi&th=1&psc=1) | 7,90€ |
+| 1 | wire | [usb litz wire](https://www.reichelt.de/usb-2-0-kabel-a-stecker-auf-2x-offene-kabelenden-delock-85250-p203116.html?&trstct=pos_2&nbc=1) | 2,52€ |
+| 1 | wire | [two-core copper cable](https://www.pollin.de/p/zwillingslitze-2x-0-14-mm2-rot-schwarz-10-m-561804) |  |
 
 
 ## 3 Software
