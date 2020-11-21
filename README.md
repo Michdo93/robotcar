@@ -64,8 +64,49 @@ The development of driver assistance functions is extensive and expensive. Virtu
 | 1 | wire | [jump wires (F2F, F2M and M2M)](https://www.amazon.de/AZDelivery-Jumper-Arduino-Raspberry-Breadboard/dp/B07KFPXN44/ref=sr_1_2_sspa?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=S8CEKQOZL6A6&dchild=1&keywords=jumper+kabel&qid=1605986389&quartzVehicle=21-720&replacementKeywords=kabel&sprefix=jumper+kabe%2Caps%2C203&sr=8-2-spons&psc=1&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEzVEJWNUhUMUg3SEg2JmVuY3J5cHRlZElkPUEwNzYxNDk3Mk9FWUJJUzRZTlZGViZlbmNyeXB0ZWRBZElkPUEwNzgzODI4SVpUNFRZUzVWTTQ5JndpZGdldE5hbWU9c3BfYXRmJmFjdGlvbj1jbGlja1JlZGlyZWN0JmRvTm90TG9nQ2xpY2s9dHJ1ZQ==) | 4,66€ |
 | 1 | wire | [4 Pin Female Jumper to Grove](https://www.amazon.de/dp/B01AD62W56?tag=ingmstap-21&linkCode=ogi&th=1&psc=1) | 7,90€ |
 | 1 | wire | [usb litz wire](https://www.reichelt.de/usb-2-0-kabel-a-stecker-auf-2x-offene-kabelenden-delock-85250-p203116.html?&trstct=pos_2&nbc=1) | 2,52€ |
-| 1 | wire | [two-core copper cable](https://www.pollin.de/p/zwillingslitze-2x-0-14-mm2-rot-schwarz-10-m-561804) |  |
+| 1 | wire | [two-core copper cable](https://www.pollin.de/p/zwillingslitze-2x-0-14-mm2-rot-schwarz-10-m-561804) | 1,90€ |
 
+At the beginning the chassis is simply assembled according to building instructions. [Here](https://www.elecrow.com/4wd-smart-car-robot-chassis-for-arduino-servo-steering.html) you can find the install instructions and install videos. Then solder cables for plus and minus on the motor. To use the toggle switch, it makes sense to solder the cables from the battery before they go to the motor driver. The following picture shows how the cables are connected to the motor driver.
+
+![robotcar](pictures/Motortreiber.PNG "Wiring motor controller")
+
+From the battery or motor driver, the cables go next to the Step Down Converter.
+
+![robotcar](pictures/Step_Down_Converter.PNG "Wiring step down converter")
+
+The Step Down Converter reduces the voltage for the pegboard and the Raspberry Pi. This allows the motor to be supplied independently from other consumers and always receives sufficient power. The Raspberry Pi is connected to the Step Down Converter via a USB-C cable. The plug-in board uses a USB stranded cable, where male plugs are soldered to the jumper cable.
+
+![robotcar](pictures/RPi_Pins.PNG "Wiring RPi")
+
+Please note that a ribbon cable of the Raspberry Pi has already been plugged into the CSI slot. In addition, the cooler has been attached and the stacking headers. The port doubler was connected via spacers and the Sense HAT was attached to it. This means that not the pins of the RPi are used but the pins of the port-doubler.
+
+The USB slots of the Raspberry Pi are occupied as follows:
+
+![robotcar](pictures/RPi_USB.PNG "Wiring RPi USB")
+
+For the GPS module this means the following cabling:
+
+![robotcar](pictures/RPi_GPS.PNG "Wiring GPS")
+
+At Raspberry Pi, the I2C bus is extended via an I2C hub as follows:
+
+![robotcar](pictures/I2C_Hub.PNG "Wiring I2C hub")
+
+For the servo controller this means the following cabling:
+
+![robotcar](pictures/Servotreiber.PNG "Wiring servo controller")
+
+The rest is connected via the breadboard:
+
+![robotcar](pictures/Steckbrett.PNG "Wiring breadboard")
+
+The MCP3008 located on the breadboard is assigned as follows:
+
+![robotcar](pictures/Wandler.PNG "Wiring MCP3008")
+
+It uses the SPI bus of the Raspberry Pi
+
+A more detailed diagram for the robot car wiring can be found in Roboterauto.vpd
 
 ## 3 Software
 =====================
@@ -325,19 +366,5 @@ Further packages:
 * With the [robotcar_sensorfusion_examples](https://github.com/Michdo93/robotcar_sensorfusion_examples) you can learn how to use as example a simple kalman filter for sensor fusion. It could be used as blue print for ADAS.
 * The [std_header_msgs](https://github.com/Michdo93/std_header_msgs) could be used as example for sensor fusion because the sensor fusion needs timestamps which are missing in the [std_msgs](http://docs.ros.org/en/melodic/api/std_msgs/html/index-msg.html) from ROS.
 * The [raspicam_node](https://github.com/Michdo93/raspicam_node) is needed to use the raspicam with ROS. So the robot car definitely needs this package.
-
-
-![robotcar](pictures/I2C_Hub.PNG "Wiring I2C hub")
-![robotcar](pictures/Motortreiber.PNG "Wiring motor controller")
-
-![robotcar](pictures/RPi_GPS.PNG "Wiring GPS")
-
-![robotcar](pictures/RPi_PINS.PNG "Wiring RPi")
-![robotcar](pictures/RPi_USB.PNG "Wiring RPi USB")
-![robotcar](pictures/Servotreiber.PNG "Wiring servo controller")
-![robotcar](pictures/Steckboard.PNG "Wiring breadboard")
-
-![robotcar](pictures/Wandler.PNG "Wiring MCP3008")
-![robotcar](pictures/Step_Down_Converter.PNG "Wiring step down converter")
 
 
