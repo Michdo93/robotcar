@@ -2,7 +2,7 @@
 
 ## Develop and test Advanced Driver Assistance Systems (ADAS) with the robotcar using Python, ROS, OpenCV and TensorFlow
 
-![robotcar](relative/path/to/img.jpg?raw=true "Title")
+![robotcar](pictures/robotcar.jpg "RobotCar")
 
 ## 1 Project Information
 =====================
