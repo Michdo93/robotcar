@@ -113,6 +113,44 @@ A more detailed diagram for the robot car wiring can be found in Roboterauto.vpd
 
 At first download and flash [Debian Buster](https://www.raspberrypi.org/downloads/raspberry-pi-os/) on a Micro SD Card.
 
+After that we will start our Raspberry Pi and open the terminal. A good start is at first:
+
+```bash
+$ sudo apt-get update -y && apt-get upgrade -y
+$ sudo rpi-update
+```
+
+We begin with changing the interface options:
+
+```bash
+$ sudo raspi-config
+```
+
+Then select `5 Interfacing Options` and press enter. There you have to go to different submenus. As example `P1 Camera`. You also have to press enter. For enabling you have to select `Yes` and press enter.
+
+You have to enable following interfacing options:
+* P1 Camera
+* P2 SSH
+* P3 VNC
+* P4 SPI
+* P5 I2C
+* P6 Serial
+
+After that we can use the RPi via SSH or VNC headless. You can check the ip address with `ifconfig`. Then you can reboot with `sudo reboot` if you want and log in via SSH.
+
+You can connect from a linux terminal to headless started Raspberry Pi via `ssh<username>@ip_address` then you have to enter the password and press enter.
+
+If you want to connect via VNC you have install as example the [Real VNC Viewer](https://www.realvnc.com/de/connect/download/viewer/) on your computer. On the Raspberry Pi you have o change the `/boot/config.txt` file as example with `sudo nano /boot/config.txt`. Inside this file you can use settings like the following that if the raspberry pi starts without any display headless, the gui can be used external like VNC does:
+
+```bash
+framebuffer_width=1280
+framebuffer_height=1024
+hdmi_force_hotplug=1
+#dtoverlay=vc4-fkms-v3d
+```
+
+After that you can choose if you want to use SSH or VNC.
+
 ### 3.1 ROS Melodic
 #### 3.1.1 Installation
 
@@ -300,52 +338,450 @@ $ source ~/.bashrc
 
 #### 3.1.3.1 Adding raspicam_node Package
 
-Don`t follow the [raspicam_node installation guide](https://github.com/UbiquityRobotics/raspicam_node) because the [raspicam_node](https://github.com/UbiquityRobotics/raspicam_node) was built for the kinetic distribution. For the melodic distribution you have to do the following workaround:
+Don`t follow the [raspicam_node installation guide](https://github.com/UbiquityRobotics/raspicam_node) because the [raspicam_node](https://github.com/UbiquityRobotics/raspicam_node) was built for the kinetic distribution. You have to use the new build [raspica_node](https://github.com/Michdo93/raspicam_node). For the melodic distribution you have to do the following workaround:
 
-```bash
-$ cd ~/ros_catkin_ws
-$ rosinstall_generator compressed_image_transport --rosdistro melodic --deps --wet-only --tar > melodic-compressed_image_transport-wet.rosinstall
-$ rosinstall_generator camera_info_manager --rosdistro melodic --deps --wet-only --tar > melodic-camera_info_manager-wet.rosinstall
-$ rosinstall_generator dynamic_reconfigure --rosdistro melodic --deps --wet-only --tar > melodic-dynamic_reconfigure-wet.rosinstall
-$ wstool merge -t src melodic-compressed_image_transport-wet.rosinstall
-$ wstool merge -t src melodic-camera_info_manager-wet.rosinstall
-$ wstool merge -t src melodic-dynamic_reconfigure-wet.rosinstall
-$ wstool update -j8 -t src
-$ rosdep install --from-paths src --ignore-src --rosdistro melodic -y -r --os=debian:buster
-$ sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/melodic -j8
+The original node is primarily supported on ROS Kinetic, and Ubuntu 16.04. This instructions are made for ROS Melodic and Raspbian Buster. So we'll have to build it from source.
+
+Make sure that your user is in the `video` group by running `groups|grep video`. If not type following in your command line: `sudo usermod -a -G video <username>`
+
+Now install following dependecies for Python:
+
+```
+sudo -H pip install -U pygithub
+sudo -H pip install -U pygithub3
+sudo -H pip install -U chainercv
 ```
 
-After you have installed and updated the ROS packages you can clone and build the [raspicam_node](https://github.com/UbiquityRobotics/raspicam_node).
+You have first to install pygithub because pygithub 3 couldn't be found if not.
 
-```bash
-$ cd ~/catkin_ws/src
-$ git clone https://github.com/UbiquityRobotics/raspicam_node.git
+Go to your ros_catkin_ws `cd ~/ros_catkin_ws/`.
 
-$ cd ~/catkin_ws
-$ rosdep install --from-paths src --ignore-src --rosdistro melodic -y
-$ sudo ./src/catkin/bin/catkin_make_isolated --install --install-space /opt/ros/melodic -DCMAKE_BUILD_TYPE=Release -j8
+After that we have to use the rosinstall_generator to add some new ROS Packages.
+
+```
+rosinstall_generator compressed_image_transport --rosdistro melodic --deps --wet-only --tar > melodic-compressed_image_transport-wet.rosinstall
+
+rosinstall_generator camera_info_manager --rosdistro melodic --deps --wet-only --tar > melodic-camera_info_manager-wet.rosinstall
+
+rosinstall_generator dynamic_reconfigure --rosdistro melodic --deps --wet-only --tar > melodic-dynamic_reconfigure-wet.rosinstall
 ```
 
-Make sure that your user is in the `video` group by running `groups|grep video`. If not you have to do:
+Then we have to merge it to our current ROS installation.
 
-```bash
-sudo usermod -a -G video pi
+```
+wstool merge -t src melodic-compressed_image_transport-wet.rosinstall
+wstool merge -t src melodic-camera_info_manager-wet.rosinstall
+wstool merge -t src melodic-dynamic_reconfigure-wet.rosinstall
 ```
 
-After that you can check the installation by running
+And then we have to update it with `wstool update -t src`
 
-```bash
-$ roslaunch raspicam_node camerav2_1280x960.launch
+Then you have to install the rosdeps again:
+
+```
+rosdep install --from-paths src --ignore-src --rosdistro melodic -y -r
 ```
 
-cd  ~/catkin_ws/src
-git clone https://github.com/ros-perception/image_common.git
-cd ~/catkin_ws/
-catkin_make
+Now we can run the build process again with:
 
-rosrun image_view image_view image:=raspicam_node/image/compressed
+```
+sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/melodic
+```
 
+Go to your catkin_ws with `cd ~/catkin_ws/src`
 
+Download the source for this node by running
+
+`git clone https://github.com/Michdo93/raspicam_node.git`
+
+Normally you should skip the follwing part with updating the rosdep:
+
+------------------------------------------------------------------------------------------
+
+There are some dependencies that are not recognized by ros, so you need to create the file `/etc/ros/rosdep/sources.list.d/30-ubiquity.list` and add this to it.
+```
+yaml https://raw.githubusercontent.com/UbiquityRobotics/rosdep/master/raspberry-pi.yaml
+```
+
+Then run `rosdep update`.
+
+------------------------------------------------------------------------------------------
+
+If skipping this part does not work try to install it like in the description above or to install it with the apt-package manager like this:
+
+```bash
+sudo apt-get install libraspberrypi0
+sudo apt-get install libraspberrypi-dev
+sudo apt-get install libpigpio-dev
+sudo apt-get install libpigpiod-if-dev
+```
+
+Normally on a Raspberry Pi with a Raspbian OS this packages should be installed by default.
+
+Install the ros dependencies,
+
+```
+cd ~/catkin_ws
+rosdep install --from-paths src --ignore-src --rosdistro=melodic -y
+```
+
+Compile the code with `catkin_make`.
+
+Later we will do some special configuration stuff that we can use ROS under Python 3 and that the RobotCar can find its needed control computer respectively operating computer.
+
+### 3.2 Install ROS Melodic on a operating computer
+
+For the control computer or operating computer a virtual machine is recommended. Here you can install Ubuntu like [Ubuntu Bionic Beaver](https://releases.ubuntu.com/18.04/). Then you can install ROS like in the following [instruction}(http://wiki.ros.org/melodic/Installation/Ubuntu). It's much easier.
+
+#### 3.2.1 Configure your Ubuntu repositories
+Configure your Ubuntu repositories to allow "restricted," "universe," and "multiverse." You can [follow the Ubuntu guide](https://help.ubuntu.com/community/Repositories/Ubuntu) for instructions on doing this.
+
+#### 3.2.2 Setup your sources.list
+Setup your computer to accept software from packages.ros.org.
+
+```
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+```
+
+#### 3.2.3 Set up your keys
+
+```
+sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+```
+
+If you experience issues connecting to the keyserver, you can try substituting hkp://pgp.mit.edu:80 or hkp://keyserver.ubuntu.com:80 in the previous command.
+
+Alternatively, you can use curl instead of the apt-key command, which can be helpful if you are behind a proxy server:
+
+```
+curl -sSL 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC1CF6E31E6BADE8868B172B4F42ED6FBAB17C654' | sudo apt-key add -
+```
+
+#### 3.2.4 Installation
+First, make sure your Debian package index is up-to-date:
+
+```
+sudo apt update
+```
+
+There are many different libraries and tools in ROS. We provided four default configurations to get you started. You can also install ROS packages individually.
+
+In case of problems with the next step, you can use following repositories instead of the ones mentioned above ros-shadow-fixed
+
+Desktop-Full Install: (Recommended) : ROS, rqt, rviz, robot-generic libraries, 2D/3D simulators and 2D/3D perception
+
+```
+sudo apt install ros-melodic-desktop-full
+```
+
+#### 3.2.5 Environment setup
+It's convenient if the ROS environment variables are automatically added to your bash session every time a new shell is launched:
+
+```
+echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+```
+
+If you have more than one ROS distribution installed, ~/.bashrc must only source the setup.bash for the version you are currently using.
+
+If you just want to change the environment of your current shell, instead of the above you can type:
+
+```
+source /opt/ros/melodic/setup.bash
+```
+
+If you use zsh instead of bash you need to run the following commands to set up your shell:
+
+```
+echo "source /opt/ros/melodic/setup.zsh" >> ~/.zshrc
+source ~/.zshrc
+```
+
+#### 3.2.6 Dependencies for building packages
+Up to now you have installed what you need to run the core ROS packages. To create and manage your own ROS workspaces, there are various tools and requirements that are distributed separately. For example, rosinstall is a frequently used command-line tool that enables you to easily download many source trees for ROS packages with one command.
+
+To install this tool and other dependencies for building ROS packages, run:
+
+```
+sudo apt install python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential
+```
+
+##### 3.2.6.1 Initialize rosdep
+Before you can use many ROS tools, you will need to initialize rosdep. rosdep enables you to easily install system dependencies for source you want to compile and is required to run some core components in ROS. If you have not yet installed rosdep, do so as follows.
+
+```
+sudo apt install python-rosdep
+```
+
+With the following, you can initialize rosdep.
+
+```
+sudo rosdep init
+rosdep update
+```
+
+### 3.3 Install and configuring the Samba Server
+
+It is recommended to integrate the robot car as network drive at the operating PC. The Samba server is installed for this purpose. Some precautions must be taken for both the server and the client. Logically, the robot car provides the server.
+
+#### 3.3.1 Samba Server
+
+On the Robotcar execute a terminal and install samba with:
+
+```
+sudo apt-get install samba samba-common-bin
+```
+
+After that you have to change die configuration file with `sudo nano /etc/samba/smb.conf`. For example, if you want to share the whole RobotCar, you must share /home/pi off the user pi. An example could look like this:
+
+```
+[global]
+netbios name = Pi
+server string = The RobotCar File System
+workgroup = WORKGROUP
+
+[HOMEPI]
+path = /home/pi
+comment = No comment
+browsable = yes
+writable = Yes
+create mask = 0777
+directory mask = 0777
+public = no
+```
+
+Then you have to set a samba password with `sudo smbpasswd -a <username>`. So for the given example with the user pi `sudo smbpasswd -a pi`. You have to enter a password and press enter. As example the RobotCar uses `robotcar` as samba password.
+
+Then you have to restart the samba service with `sudo /etc/init.d/smbd restart`.
+
+#### 3.3.2 Samba Client
+
+On the operating computer or control computer you have to open a terminal and install following:
+
+```
+sudo apt-get install cifs-utils
+```
+
+For mouting the network drive you have to create a folder like with `sudo mkdir /mnt/RobotCar`. Then you can mount it with:
+
+```
+sudo mount -t cifs -o username=<username>,password=<samba password>,uid=1000 //<hostname>/<folder> /mnt/RobotCar/
+```
+
+As example with:
+
+```
+sudo mount -t cifs -o username=pi,password=robotcar,uid=1000 //robotcar/robotcar /mnt/RobotCar/
+```
+
+If you loose the network connection it could be that you have redone the last step. After that it is possible to use as example [Visual Studio Code](https://code.visualstudio.com/docs/setup/linux) from your operating computer or control computer to change files on the RobotCar. 
+
+### 3.4 Python and other installations
+
+#### 3.4.1 Python installations
+
+Normally Python should be installed on Raspbian. You can check it with `python3 --version`. If not you have to do following:
+
+```
+$ sudo apt-get update
+$ sudo apt-get install python3.7
+```
+
+For Raspbian a Python library for using the GPIO Pins should be installed. If not, you can install it with:
+
+```
+sudo apt-get install python-rpi.gpio
+```
+
+If you want to use pip you have to install it with:
+
+```
+sudo apt-get install python-pip
+sudo apt-get install python3-pip
+```
+
+As example you can install via pip3 following:
+
+```
+pip3 install readchar
+pip3 install flask
+```
+
+The readchar library could be used to read the input from the keyboard. The flask web framework could be used that the RobotCar as example could be used as a webserver. This could be helpful to control the RobotCar if you want to create a corresponding program.
+
+#### 3.4.2 Camera installations
+
+If you want to create a test picture you could use:
+
+```
+raspistill -o testbild.jpg
+```
+
+The picture testbild.jpg should be created in your current folder.
+
+If you want to create a simple video of 20 seconds in the h264 codec you could run:
+
+```
+raspivid -o testvideo.h264 -t 20000
+```
+
+The picture testvideo.h264 should be created in your current folder.
+
+For using the raspicam without ROS you can install Cheese with:
+
+```
+sudo apt-get install cheese
+```
+
+Maybe a helpful installation could be he mjpg-streamer. It allows us to show a movie stream from the camera via a web based url. So you can see what the camera sees. This could be helpful to conrol the Robotcar.
+
+At first you have to install following packages:
+
+```
+sudo apt-get install libjpeg8-dev
+sudo apt-get install cmake
+```
+
+The you have to go to `cd /opt/` and download it with:
+
+```
+sudo wget https://custom-build-robots.com/mjpg-streamer.zip
+```
+
+After that you have to unzip the archive and open the unzipped folder and build the mjpg-streamer:
+
+```
+cd /opt/
+sudo unzip mjpg-streamer.zip
+cd mjpg-streamer
+sudo make
+sudo make install
+```
+
+Then you have to load the kernel module for Video4Linux driver version 2 (v4l2) with `sudo modprobe bcm2835-v4l2`.
+
+You can check it with `sudo lsmod` or with `sudo nano /etc/modules`:
+
+```
+i2c-dev
+bcm2835-v4l2
+```
+
+The we have to finde the Device name of the camera with `ls /dev/vid*`. This could be as example `/dev/video0`.
+
+To configure the mjpg-streamer change it with `nano /opt/mjpg-streamer/start.sh` and extend the following line
+
+```
+./mjpg_streamer -i "./input_uvc.so" -o "./output_http.so -w ./www"
+```
+
+with
+
+```
+./mjpg_streamer -i "./input_uvc.so" -d /dev/video0 -r 800x640 -f 25 -o "./output_http.so -w ./www" 
+```
+
+So you added the device video0 with resolution 800x640 and framerate 25.
+
+The go to `cd /opt/mjpg-streamer/` enter `sudo modprobe bcm2835-v4l2` and restart it with `sudo sh ./start.sh`.
+
+Now you can see it under `http://<ip address of the robotcar>:8080`
+
+That it runs on every startup you have to copy it to `/etc/init.d` with `sudo cp /opt/mjpg-streamer.sh /etc/init.d/mjpg-streamer.sh`.
+
+Then change the execution permissions with `sudo chmod +x /etc/init.d/mjpg-streamer.sh`.
+
+Enter in rc.d for auto start
+
+```
+sudo update-rc.d mjpg-streamer.sh defaults
+```
+
+Sign out again (dont do it, if you want it to run after the startup.)
+
+```
+sudo update-rc.d mjpg-streamer.sh remove
+```
+
+Check if started
+
+```
+sudo reboot
+systemctl list-units -t service
+```
+
+Start manually
+
+```
+
+```
+
+Stop
+
+```
+sudo service mjpg-streamer.sh start
+```
+
+Restart
+
+```
+sudo service mjpg-streamer.sh restart
+```
+
+#### 3.4.3 NTP client
+
+The time can be synchronized via an NTP server using the NTP client. This can be installed as follows:
+
+```
+sudo apt-get install ntp
+sudo dpkg-reconfigure tzdata
+sudo /etc/init.d/ntp restart
+```
+
+You can check the time synchronization with:
+
+```
+date
+```
+
+Maybe there are multiple NTP servers available. To check if it only uses one server you can run:
+
+```
+ntpg -pn
+```
+
+#### 3.4.4 I2C
+
+We need the I2C bus of the raspberry pi. After enabling it we have to instal it with:
+
+```
+sudo apt-get install i2c-tools
+sudo apt-get install python-smbus
+```
+
+To check if it is working and if connected devices could be found you can run:
+
+```
+i2cdetect -y 1
+```
+
+#### 3.4.5 Additional text editor like Code-OSS
+
+Code OSS is nearly the same as Visual Studio Code. It could be installed as alternative text editor on the Raspberry Pi like following:
+
+```
+wget https://packagecloud.io/headmelted/codebuilds/gpgkey -O - | sudo apt-key add
+curl -L https://code.headmelted.com/installers/apt.sh | sudo bash
+```
+
+If this does not work try it with:
+
+```
+wget -o - https://packagecloud.io/headmelted/codebuilds/gpgkey| sudo apt-key add -
+sudo apt-get install code-oss=1.29.0-1539702286
+```
+
+You can open and edit a Python program with `code-oss <filename.py>` like `code-oss main.py`.
 
 ## 4 Simulation Platform
 =====================
@@ -366,5 +802,8 @@ Further packages:
 * With the [robotcar_sensorfusion_examples](https://github.com/Michdo93/robotcar_sensorfusion_examples) you can learn how to use as example a simple kalman filter for sensor fusion. It could be used as blue print for ADAS.
 * The [std_header_msgs](https://github.com/Michdo93/std_header_msgs) could be used as example for sensor fusion because the sensor fusion needs timestamps which are missing in the [std_msgs](http://docs.ros.org/en/melodic/api/std_msgs/html/index-msg.html) from ROS.
 * The [raspicam_node](https://github.com/Michdo93/raspicam_node) is needed to use the raspicam with ROS. So the robot car definitely needs this package.
+
+### Installation
+
 
 
