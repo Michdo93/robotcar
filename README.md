@@ -1196,3 +1196,9 @@ https://github.com/Michdo93/raspicam_node.git
 ```
 
 Now everything should be installed.
+
+As last step you can configurate the servos of the steering and pan-tilt-bracket by running (inside the robotcar folder):
+
+```
+python configurate_servos.py
+```
