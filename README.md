@@ -903,6 +903,113 @@ sudo apt-get install code-oss=1.29.0-1539702286
 
 You can open and edit a Python program with `code-oss <filename.py>` like `code-oss main.py`.
 
+### OpenCV and TensorFlow inside virtualenv
+
+In order to share ROS, OpenCV and TensorFlow, a virtual environment must be created using Python 3. Unfortunately, the Edge TPU only works with Python 3, which means TensorFlow. ROS, on the other hand, only works under Python 2, but with a workaround it also works under Python 3. OpenCV can be run under Python 2 and Python 3 just like TensorFlow. However, the Edge TPU is required as a co-processor for TensorFlow, otherwise the performance would be insufficient.
+
+First of all we install a few packages to resolve dependencies:
+
+```
+sudo apt-get install libhdf5-dev -y && sudo apt-get install libhdf5-serial-dev -y && sudo apt-get install tflibatlas-base-dev -y && sudo apt-get install libjasper-dev -y && sudo apt-get install libqtgui4 -y && sudo apt-get install libqt4-test -y
+```
+
+OpenCV cannot be used in one of the 4 versions due to ROS. Therefore we install it in the following version:
+
+```
+pip3 install opencv-python==3.4.3.18
+```
+
+After that we install with `pip3 install matplotlib` matplotlib.
+
+We can check the installation with:
+
+```
+python3 -c "import cv2"
+python3 -c "import numpy"
+python3 -c "import matplotlib"
+```
+
+Then we install the Edge TPU driver:
+
+```
+echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | sudo tee /etc/apt/sources.list.d/coral-edgetpu.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add –
+sudo apt-get update
+sudo apt-get install libedgetpu1-std
+sudo apt-get install libedgetpu1-max
+sudo apt-get install python3-edgetpu
+```
+
+This would allow OpenCV and TensorFlow to be used outside a virtual environment. So you can run or test programs separately.
+
+In the next step we install virtualenv and the virtualenvwrapper:
+
+```
+sudo pip install virtualenv virtualenvwrapper==4.8.4
+```
+
+In the `.bashrc` file we add something like this:
+
+```
+# virtualenv and virtualenvwrapper
+export WORKON_HOME=$HOME/.virtualenvs
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.7
+source /usr/local/bin/virtualenvwrapper.sh
+workon robotcar
+```
+
+Then we create our virtualenv called robotcar:
+
+```
+mkvirtualenv robotcar -p python3
+```
+
+You can check the installation with:
+
+```
+cd ~/.virtualenvs/coral/lib/python3.7/site-packages
+ln -s /usr/lib/python3/dist-packages/edgetpu/ edgetpu
+```
+
+Then you have to activate the virtualenv with:
+
+```
+workon robotcar
+```
+
+Now you can use pip instead of pip3 or python instead of python3 because the virtualenv runs only under Python 3.
+
+Afterwards some more packages have to be installed...
+
+```
+pip install "picamera[array]"
+pip install opencv-python==3.4.3.18
+pip install matplotlib
+pip install imutils
+pip install tensorflow==2.0.0
+pip install keras –no-use-pep517
+pip install pillow
+pip install https://dl.google.com/coral/python/tflite_runtime-2.1.0.post1-cp37-cp37m-linux_armv7l.whl
+```
+
+Then we have to create a folder where we want to install TensorFlow Lite (tflite). It's the mobile Version of TensorFlow whiche are used on the TPU.
+
+```
+mkdir coral && cd coral
+git clone https://github.com/google-coral/tflite.git
+cd tflite/python/examples/classification
+bash install_requirements.sh
+```
+
+You can test this installation with:
+
+```
+python3 classify_image.py \
+--model models/mobilenet_v2_1.0_224_inat_bird_quant_edgetpu.tflite \
+--labels models/inat_bird_labels.txt \
+--input images/parrot.jpg
+```
+
 ## 4 Simulation Platform
 =====================
 
@@ -922,6 +1029,65 @@ Further packages:
 * With the [robotcar_sensorfusion_examples](https://github.com/Michdo93/robotcar_sensorfusion_examples) you can learn how to use as example a simple kalman filter for sensor fusion. It could be used as blue print for ADAS.
 * The [std_header_msgs](https://github.com/Michdo93/std_header_msgs) could be used as example for sensor fusion because the sensor fusion needs timestamps which are missing in the [std_msgs](http://docs.ros.org/en/melodic/api/std_msgs/html/index-msg.html) from ROS.
 * The [raspicam_node](https://github.com/Michdo93/raspicam_node) is needed to use the raspicam with ROS. So the robot car definitely needs this package.
+
+### 4.1 Configuration
+
+#### 4.1.1 Configurations on the operating computer
+
+After the installation of the necessary software and frameworks, basic precautions have to be taken for the simulation platform so that the operating computer and RobotCar can find each other in the network, ROS can be used accordingly in the command line and the virtual environment OpenCV and TensorFlow, as well as other packages can be integrated. For this purpose, the virtual environment is started and each terminal window executes it automatically.
+
+So we edit our terminal configuration with sudo ~/.bashrc:
+
+```
+export WORKON_HOME=$HOME/.virtualenvs
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+source /usr/local/bin/virtualenvwrapper.sh
+
+workon coral
+
+source /opt/ros/melodic/setup.bash
+source /home/ros/catkin_ws/devel/setup.bash
+. ~/catkin_ws/devel/setup.bash
+
+export ROS_HOSTNAME="$(hostname -f)"
+export ROS_MASTER_URI=http://"$(hostname -f)":11311
+export ROS_IP="$(hostname -I | awk '{print $1;}')"
+export ROS_PYTHON_VERSION=3
+```
+
+As example it works on a virtualenv named coral.
+
+#### 4.1.2 Configurations on the RobotCar
+
+The same applies to the robot car as to the operating computer. There are a few small changes.
+
+So we edit our terminal configuration with sudo ~/.bashrc:
+
+```
+# virtualenv and virtualenvwrapper
+export WORKON_HOME=$HOME/.virtualenvs
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+source /usr/local/bin/virtualenvwrapper.sh
+
+#workon robotcar
+source $WORKON_HOME/robotcar/bin/activate
+
+#export PATH=/usr/bin/python2.7:$PATH
+
+source /opt/ros/melodic/setup.bash
+source /home/pi/catkin_ws/devel/setup.bash
+
+
+export ROS_HOSTNAME="$(hostname -f)"
+export MASTER_URI_NAME=ros-melodic-master
+export ROS_MASTER_URI=http://$MASTER_URI_NAME:11311
+#export ROS_MASTER_URI=http://141.28.75.144:11311
+export ROS_IP="$(hostname -I | awk '{print $1;}')"
+```
+
+You work on a virtualenv called robotcar.
+
+If multiple RobotCars are available you have to [change the hostname](https://tunethepi.de/hostname-am-raspberry-pi-aendern/).
 
 ### Installation
 
