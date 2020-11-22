@@ -735,6 +735,12 @@ The time can be synchronized via an NTP server using the NTP client. This can be
 ```
 sudo apt-get install ntp
 sudo dpkg-reconfigure tzdata
+```
+
+Then you set the-timezone as example to Europe/Berlin with:
+
+```
+sudo timedatectl set-timezone Europe/Berlin
 sudo /etc/init.d/ntp restart
 ```
 
@@ -748,6 +754,24 @@ Maybe there are multiple NTP servers available. To check if it only uses one ser
 
 ```
 ntpg -pn
+```
+
+If there are more than one NTP server you can change it with `nano /etc/ntp.conf`:
+
+```
+# SHM 0
+server 127.127.28.0
+fudge 127.127.28.0 refid GPSa
+# SHM 1
+server 127.127.28.1
+fudge 127.127.28.1 refid GPSp
+```
+
+In the given example you can delete one entry. After that you have to restart it again and check again if there is only one server:
+
+```
+sudo /etc/init.d/ntp restart
+ntpq -pn
 ```
 
 #### 3.4.4 I2C
@@ -765,7 +789,103 @@ To check if it is working and if connected devices could be found you can run:
 i2cdetect -y 1
 ```
 
-#### 3.4.5 Additional text editor like Code-OSS
+#### 3.4.5 GPS
+
+The necessary GPS programs such as the Python libraries, the gpsd daemon server and the xGPS program are all installed on your Raspberry Pi together with the following command:
+
+```
+sudo apt-get install gpsd gpsd-clients python-gps
+sudo apt-get install python-gi-cairo
+```
+
+Further informations you can found [here](https://wiki.52pi.com/index.php/USB-Port-GPS_Module_SKU:EZ-0048).
+
+Enable it: `sudo systemctl enable gpsd.socket`
+Start it: `sudo systemctl start gpsd.socket`
+Restart it: `sudo systemctl restart gpsd.socket`
+Check status: `sudo systemctl status gpsd.socket`
+
+Modify the "DEVICE" parameter according to the name of serial port in /dev folder. It is usually named "/dev/ttyUSB0" if you connect it to Raspberry Pi via USB cable.
+
+```
+sudo nano /etc/default/gpsd
+```
+
+As example you can see something like this:
+
+```
+# Default settings for the gpsd init script and the hotplug wrapper.
+
+# Start the gpsd daemon automatically at boot time
+START_DAEMON="true"
+
+# Use USB hotplugging to add new USB devices automatically to the daemon
+USBAUTO="true"
+
+# Devices gpsd should collect to at boot time.
+# They need to be read/writeable, either by user gpsd or the group dialout.
+DEVICES="/dev/ttyUSB0"
+
+# Other options you want to pass to gpsd
+GPSD_OPTIONS="-F /var/run/gpsd.sock"
+```
+
+The restart the service with `sudo systemctl restart gpsd.socket`
+
+Finally, use this command to get information from GPS module:
+
+```
+sudo cgps -s
+```
+
+Start the gpsd server daemon with the following command in the terminal window:
+
+```
+sudo gpsd -b /dev/ttyACM0 -F /var/run/gpsd.sock -G
+```
+
+You could test the gps with the gps-test.py file inside robotcar/test:
+
+```
+sudo python3 gps-test.py
+```
+
+#### 3.4.6 Sense HAT
+
+In order to be able to calibrate the magnetometer of the Raspberry Pi Sense HAT later, you must install the Octave programme. Octave is an interactive scripting language which can be used to solve problems from numerical mathematics together with the Raspberry Pi Sense HAT, e.g. calculating the local magnetic field of the earth.
+
+```
+sudo apt-get install octave
+```
+
+Further informations to the Sense HAT you can found [in the API](https://pythonhosted.org/sense-hat/). You have to install and restart the Sense HAT with following commands:
+
+```
+sudo apt-get install sense-hat
+sudo reboot
+```
+
+The magnetometer must be calibrated for the respective place of use, since the earth's magnetic field is location-dependent and there may also be interference from the environment. You can do it with:
+
+```
+cd /usr/share/librtimulib-utils/RTEllipsoidFit
+sudo RTIMULibCal
+```
+
+Then you have to press <kbd>m</kbd> for `calibrate Magnetometer`.
+
+Then roll, turn and tilt the RobotCar as described.
+Repeat the various movements alternately until the numbers in the terminal window no longer change. The sequence of the turn, tilt and roll movements is irrelevant. If the numbers remain the same, calibration is complete and by entering the letter <kbd>S</kbd> you save the recorded data in the configuration file RTIMULib.ini. Then press <kbd>X</kbd> to exit the RTIMULibCal program.
+
+To do this, press key <kbd>A</kbd>, follow the description displayed and calibrate the accelerometer in the same steps as you did for the magnetometer.
+Creates `/usr/share/librtimulib-utils/RTEllipsoidFit/RTIMULib.ini`. Copy it with `cp /usr/share/librtimulib-utils/RTEllipsoidFit/ /etc/RTIMULib.ini`.
+The RTIMULib.ini file is expected by the Sense-HAT-API in the `/etc/` folder. If you use the Sense-HAT-API in a Python program that also uses the magnetometer and accelerometer, the RTIMULib.ini file is read from there.
+
+The Raspberry-Pi-Sense-HAT-API creates a copy of the file RTIMULib.ini in the folder `/home/pi/.config/sense_hat`. Always delete the RTIMULib.ini file there when you have performed a new calibration.
+
+The program display updates every 0.1 seconds and shows you how much the orientation of the robot car deviates from the north. By turning the robot car, you can orient it towards the south.
+
+#### 3.4.7 Additional text editor like Code-OSS
 
 Code OSS is nearly the same as Visual Studio Code. It could be installed as alternative text editor on the Raspberry Pi like following:
 
