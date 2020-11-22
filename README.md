@@ -1089,7 +1089,110 @@ You work on a virtualenv called robotcar.
 
 If multiple RobotCars are available you have to [change the hostname](https://tunethepi.de/hostname-am-raspberry-pi-aendern/).
 
-### Installation
+### 4.2 Installation
 
+#### 4.2.1 Installations on the operating computer
 
+You have to go into the src folder of your catkin workspace with `cd ~/catkin_ws/src` and clone following repositories:
 
+```
+git clone https://github.com/Michdo93/robotcar_controller.git
+git clone https://github.com/Michdo93/robotcar_msgs.git
+git clone https://github.com/Michdo93/beginner_tutorials.git
+git clone https://github.com/Michdo93/robotcar_subscriber.git
+git clone https://github.com/Michdo93/robotcar_sensorfusion_examples.git
+```
+
+#### 4.2.2 Installations on the RobotCar
+
+At first we want to clone this repository. For this we go to the root directory with `cd ~` and clone it with:
+
+```
+https://github.com/Michdo93/robotcar.git
+```
+
+Then we have to install the necessary libraries. So we go `/robotcar/lib` with `cd robotcar/lib`. You have to make sure that you are inside of the virtualenv. If not you have to enter `workon robotcar`.
+
+At first we began with the [MCP3008 library](https://github.com/adafruit/Adafruit_Python_MCP3008/):
+
+```
+cd Adafruit_Python_MCP3008
+sudo python setup.py install
+```
+
+After that we have to install the [Adafruit_Python_SSD1306 library](https://github.com/adafruit/Adafruit_Python_SSD1306/):
+
+```
+cd ../Adafruit_Python_SSD1306
+sudo python setup.py install
+```
+
+Then we install the [piVirtualWire library](https://github.com/DzikuVx/piVirtualWire/):
+
+```
+cd ../piVirtualWire
+sudo apt-get install pigpio
+sudo systemctl start pigpiod
+sudo systemctl enable pigpiod
+```
+
+The we want to install the [vl53l1x-python library](https://github.com/pimoroni/vl53l1x-python/) for our Time-of-Flight sensors:
+
+```
+cd ../vl53l1x-python
+sudo python setup.py install
+```
+
+At least we install an older version of the [Adafruit_Python_PCA9685 library](https://github.com/adafruit/Adafruit_Python_PCA9685):
+
+```
+cd ../Adafruit_Python_PCA9685-master
+sudo python setup.py install
+```
+
+After that we create the startup of the robotcar. We could go to `/robotcar/startup`. You have to execute:
+
+```
+sudo cp ~/robotcar/startup/robotcar.service /etc/systemd/system/robotcar.service
+sudo cp ~/robotcar/startup/clear.service /etc/systemd/system/clear.service
+
+cd /etc/systemd/system/
+
+sudo systemctl enable robotcar.service
+sudo systemctl enable clear.service
+```
+
+You can control the service files with:
+
+```
+sudo systemctl start robotcar.service
+sudo systemctl stop robotcar.service
+sudo systemctl enable robotcar.service
+sudo systemctl disable robotcar.service
+
+sudo systemctl start clear.service
+sudo systemctl stop clear.service
+sudo systemctl enable clear.service
+sudo systemctl disable clear.service
+```
+
+The service files switch off the LEDs of the Sense HAT, resolve the I2C conflict of both ToF sensors and show on the OLED display the host name, IP address and the user name of the robot car where the files clear.py, vl53l1x.py and robot.py are executed at system startup.
+
+Next, we go into the src directory of the Catkin workspace with cd ~/catkin_ws/src and clone all necessary repositories:
+
+```
+git clone https://github.com/Michdo93/robotcar-pkg.git
+git clone https://github.com/Michdo93/robotcar_msgs.git
+git clone https://github.com/Michdo93/beginner_tutorials.git
+git clone https://github.com/Michdo93/robotcar_subscriber.git
+git clone https://github.com/Michdo93/robotcar_sensorfusion_examples.git
+git clone https://github.com/Michdo93/std_header_msgs.git
+```
+
+The [raspicam_node](https://github.com/Michdo93/raspicam_node) should be installed during the ROS installation. If not you can clone it with:
+
+```
+https://github.com/Michdo93/raspicam_node.git
+```
+
+Now everything should be installed.
