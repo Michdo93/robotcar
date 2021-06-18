@@ -1,0 +1,38 @@
+VM
+Terminal 1 öffnen:
+cat /mnt/mount_instruction.txt
+
+sudo mount -t cifs -o username=pi,password=robotcar,uid=1000 //robotcar.local/robotcar /mnt/RobotCar/
+
+oder
+
+sudo mount -t cifs -o username=pi,password=robotcar,uid=1000 //robotcar/robotcar /mnt/RobotCar/
+
+cd /mnt/RobotCar
+code .
+
+------------------------------------------------
+
+Terminal 2 öffnen: roscore
+
+
+RobotCar
+Terminal 3 öffnen:
+ssh pi@robotcar oder ssh pi@robotcar.local
+
+roslaunch robotcar robotcar.launch
+
+Terminal 4 öffnen:
+ssh pi@robotcar oder ssh pi@robotcar.local
+
+roslaunch raspicam_node camerav2_1280x960_10fps.launch enable_raw:=true
+
+------------------------------------------------
+
+VM
+Terminal 5 öffnen:
+z.B. rosrun robotcar_subscriber frontIRSubscriber.py
+
+Terminal 6 öffnen:
+cd catkin_ws/src
+code .
