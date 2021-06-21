@@ -1029,7 +1029,7 @@ Further packages:
 * With the [robotcar_sensorfusion_examples](https://github.com/Michdo93/robotcar_sensorfusion_examples) you can learn how to use as example a simple kalman filter for sensor fusion. It could be used as blue print for ADAS.
 * The [std_header_msgs](https://github.com/Michdo93/std_header_msgs) could be used as example for sensor fusion because the sensor fusion needs timestamps which are missing in the [std_msgs](http://docs.ros.org/en/melodic/api/std_msgs/html/index-msg.html) from ROS.
 * The [raspicam_node](https://github.com/Michdo93/raspicam_node) is needed to use the raspicam with ROS. So the robot car definitely needs this package.
-* The [raspicam_node_saver](https://github.com/Michdo93/raspicam_node) is needed to save frames from the [raspicam_node](https://github.com/Michdo93/raspicam_node) as individual JPEG frames or as avi video. It can therefore be used, for example, to record training data for machine learning.
+* The [raspicam_node_saver](https://github.com/Michdo93/raspicam_node_saver) is needed to save frames from the [raspicam_node](https://github.com/Michdo93/raspicam_node) as individual JPEG frames or as avi video. It can therefore be used, for example, to record training data for machine learning.
 * The [robotcar_plotter](https://github.com/Michdo93/robotcar_plotter) shows various curves for sensor information or diagrams for the position and orientation of the RobotCar, e.g. compass or 3D gyroscope, etc.
 
 ### 4.1 Configuration
